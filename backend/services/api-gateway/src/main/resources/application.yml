@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  datasource:
+    url: jdbc:postgresql://localhost:5432/webhook_platform
+    username: webhook
+    password: webhook
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+services:
+  webhook-management:
+    base-url: http://localhost:8083
+  event-ingestion:
+    base-url: http://localhost:8084
+  delivery:
+    base-url: http://localhost:8081
+  scheduler:
+    base-url: http://localhost:8082
+
+gateway:
+  admin:
+    api-key: local-admin-key
+  cors:
+    allowed-origins:
+      - http://localhost:5173
+      - http://127.0.0.1:5173
+      - http://localhost:3000
+      - http://127.0.0.1:3000
+  rate-limit:
+    requests-per-minute: 120
+
+logging:
+  pattern:
+    level: "%5p [requestId:%X{requestId:-}]"
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when_authorized
+  endpoints:
+    web:
+      exposure:
+        include: health,info

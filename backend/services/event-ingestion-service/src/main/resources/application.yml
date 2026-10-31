@@ -1,0 +1,39 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: event-ingestion-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/webhook_platform
+    username: webhook
+    password: webhook
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+logging:
+  pattern:
+    level: "%5p [requestId:%X{requestId:-}]"
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when_authorized
+  endpoints:
+    web:
+      exposure:
+        include: health,info
